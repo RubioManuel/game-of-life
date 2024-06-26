@@ -1,17 +1,32 @@
 #include "raylib.h"
 
+#include "grid.h"
+#include <stdio.h>
 
 int main(void)
 {
-    InitWindow(800, 450, "Hello World with Raylib");
+    const int screenWidth = 800;
+    const int screenHeight = 800;
+
+    InitWindow(screenWidth, screenHeight, "Game of Life");
+    SetTargetFPS(15);
+
+    Grid *gameGrid = createGrid(100);
+    randomizeGrid(gameGrid);
+
 
     while (!WindowShouldClose()) {
 
         BeginDrawing();
+
             ClearBackground(BLACK);
-            DrawText("Hello, world!", 280, 200, 40, WHITE);
+            drawGrid(gameGrid, screenWidth, screenHeight);
+
         EndDrawing();
+        gameGrid = getNextFrameGrid(gameGrid);
     }
+
+    CloseWindow();
 
     return 0;
 }
