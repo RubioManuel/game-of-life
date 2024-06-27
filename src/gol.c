@@ -1,7 +1,7 @@
 #include "raylib.h"
 
 #include "grid.h"
-#include <stdio.h>
+
 
 int main(void)
 {
@@ -11,7 +11,7 @@ int main(void)
     InitWindow(screenWidth, screenHeight, "Game of Life");
     SetTargetFPS(15);
 
-    Grid *gameGrid = createGrid(100);
+    Grid *gameGrid = createGrid(400);
     randomizeGrid(gameGrid);
 
 
@@ -26,6 +26,7 @@ int main(void)
         gameGrid = getNextFrameGrid(gameGrid);
     }
 
+    freeGrid(gameGrid);
     CloseWindow();
 
     return 0;

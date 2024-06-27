@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <time.h>
 
+
 typedef struct Grid {
     int gridSize;
     int **grid;
@@ -56,7 +57,7 @@ void drawGrid(Grid *grid, int windowWidth, int windowHeight)
     }
 }
 
-bool nextCellState(int cellX, int cellY, int **grid, int gridSize)
+static bool nextCellState(int cellX, int cellY, int **grid, int gridSize)
 {
     bool alive = grid[cellX][cellY];
     int aliveNeighbors = 0;
@@ -114,6 +115,8 @@ bool nextCellState(int cellX, int cellY, int **grid, int gridSize)
 
 Grid *getNextFrameGrid(Grid *currentGameGrid)
 {
+    void freeGrid(Grid *grid);
+
     Grid *nextFrameGrid = createGrid(currentGameGrid->gridSize);
     nextFrameGrid->gridSize = currentGameGrid->gridSize;
 
@@ -130,6 +133,22 @@ Grid *getNextFrameGrid(Grid *currentGameGrid)
             nextFrameGrid->grid[i][j] = nextCellState(i, j, currentGameGrid->grid, currentGameGrid->gridSize);
         }
     }
+    
+    /* Avoiding memory leaks freeing the memory used for the current game grid when
+        computed the next grid state */
+    freeGrid(currentGameGrid);
 
     return nextFrameGrid;
+}
+
+void freeGrid(Grid *grid)
+{
+    int i;
+
+    for (i = 0; i < grid->gridSize; i++) {
+        free(grid->grid[i]);
+        grid->grid[i] = NULL;       /* Ensuring we are not freeing the memory twice */
+    }
+    free(grid);
+    grid = NULL;
 }
